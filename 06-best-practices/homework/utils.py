@@ -1,12 +1,13 @@
 import os
 from typing import List
-import sys
 import pickle
 import pandas as pd
 
 
 class Model:   
     def __init__(self, model_filename, year: int, month: int) -> None:
+        self.year = year
+        self.month = month
         self._get_input_path(year, month)
         self._get_output_path(year, month)
         self._load_model(model_filename)
@@ -38,7 +39,7 @@ class Model:
 
     def _predict(self,df: pd.DataFrame, categorical: List[str]) -> pd.DataFrame:
         df = df.copy()
-        df['ride_id'] = f'{year:04d}/{month:02d}_' + df.index.astype('str')
+        df['ride_id'] = f'{self.year:04d}/{self.month:02d}_' + df.index.astype('str')
 
         dicts = df[categorical].to_dict(orient='records')
         X_val = self.dv.transform(dicts)
@@ -53,17 +54,17 @@ class Model:
 
 
     def predict(self, categorical: List[str]) -> pd.DataFrame:
-        df = self.preprocess_data(self.input_data)
+        df = self.preprocess_data(self.input_data, categorical)
         return self._predict(df, categorical)
 
 
     def predict_nsave(self, categorical: List[str]) -> None:
-        df = self.preprocess_data(self.input_data)
+        df = self.preprocess_data(self.input_data, categorical)
         df = self._predict(df, categorical)
         df.to_parquet(self.output_file, engine='pyarrow', index=False)
 
 
-    def preprocess_data(self, df: pd.DataFrame) -> pd.DataFrame:
+    def preprocess_data(self, df: pd.DataFrame, categorical: List[str]) -> pd.DataFrame:
         df = df.copy()
         df['duration'] = df.dropOff_datetime - df.pickup_datetime
         df['duration'] = df.duration.dt.total_seconds() / 60

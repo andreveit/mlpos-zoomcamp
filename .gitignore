@@ -70,6 +70,7 @@ instance/
 
 # Scrapy stuff:
 .scrapy
+dev.ipynb
 
 # Sphinx documentation
 docs/_build/
