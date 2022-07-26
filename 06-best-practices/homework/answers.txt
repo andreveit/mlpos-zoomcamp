@@ -1,0 +1,6 @@
+Q1: (not an specific question)
+Q2: __init__.py
+Q3: 2
+Q4: aws --endpoint-url=http://localhost:4566 s3 ls
+Q5: 3512 -> found 3504 -> command: aws --endpoint-url=http://localhost:4566 s3 ls s3://nyc-duration
+Q6: Sum of durations:  69.28869683240714
